@@ -8,14 +8,13 @@ monkey.patch_all(thread=False)
 from time import time
 import sys
 import random
-import warnings
 import traceback
 import logging
 
-from .clients import HttpSession
-from . import events
+from locust.clients import HttpSession
+from locust import events
 
-from .exception import LocustError, InterruptTaskSet, RescheduleTask, RescheduleTaskImmediately, StopLocust
+from locust.exception import LocustError, InterruptTaskSet, RescheduleTask, RescheduleTaskImmediately, StopLocust
 
 logger = logging.getLogger(__name__)
 

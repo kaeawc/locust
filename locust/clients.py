@@ -10,8 +10,8 @@ from requests.auth import HTTPBasicAuth
 from requests.exceptions import (RequestException, MissingSchema,
     InvalidSchema, InvalidURL)
 
-from . import events
-from .exception import CatchResponseError, ResponseError
+from locust import events
+from locust.exception import CatchResponseError, ResponseError
 
 absolute_http_url_regexp = re.compile(r"^https?://", re.I)
 

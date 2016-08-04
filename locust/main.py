@@ -1,5 +1,5 @@
 import locust
-from . import runners
+from locust import runners
 
 import gevent
 import sys
@@ -10,13 +10,13 @@ import logging
 import socket
 from optparse import OptionParser
 
-from . import web
-from .log import setup_logging, console_logger
-from .stats import stats_printer, print_percentile_stats, print_error_report, print_stats
-from .inspectlocust import print_task_ratio, get_task_ratio_dict
-from .core import Locust, HttpLocust
-from .runners import MasterLocustRunner, SlaveLocustRunner, LocalLocustRunner
-from . import events
+from locust import web
+from locust.log import setup_logging, console_logger
+from locust.stats import stats_printer, print_percentile_stats, print_error_report, print_stats
+from locust.inspectlocust import print_task_ratio, get_task_ratio_dict
+from locust.core import Locust, HttpLocust
+from locust.runners import MasterLocustRunner, SlaveLocustRunner, LocalLocustRunner
+from locust import events
 
 _internals = [Locust, HttpLocust]
 version = locust.__version__
