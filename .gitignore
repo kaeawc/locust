@@ -13,3 +13,8 @@ dist/**
 build/
 .coverage
 .tox/
+bin/
+lib/
+include/
+.Python
+pip-selfcheck.json
