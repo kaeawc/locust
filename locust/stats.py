@@ -2,11 +2,11 @@ import time
 import gevent
 import hashlib
 import six
-from six.moves import xrange
+from past.builtins import xrange
 
-from . import events
-from .exception import StopLocust
-from .log import console_logger
+from locust import events
+from locust.exception import StopLocust
+from locust.log import console_logger
 
 STATS_NAME_WIDTH = 60
 
