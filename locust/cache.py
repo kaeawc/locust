@@ -1,5 +1,6 @@
 from time import time
 
+
 def memoize(timeout, dynamic_timeout=False):
     """
     Memoization decorator with support for timeout.
@@ -7,7 +8,8 @@ def memoize(timeout, dynamic_timeout=False):
     If dynamic_timeout is set, the cache timeout is doubled if the cached function 
     takes longer time to run than the timeout time
     """
-    cache = {"timeout":timeout}
+    cache = {"timeout": timeout}
+
     def decorator(func):
         def wrapper(*args, **kwargs):
             start = time()
@@ -28,4 +30,3 @@ def memoize(timeout, dynamic_timeout=False):
         wrapper.clear_cache = clear_cache
         return wrapper
     return decorator
-

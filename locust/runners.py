@@ -11,7 +11,7 @@ import gevent
 from gevent import GreenletExit
 from gevent.pool import Group
 import six
-from six.moves import xrange
+from past.builtins import xrange
 
 from . import events
 from .stats import global_stats
@@ -25,6 +25,7 @@ locust_runner = None
 
 STATE_INIT, STATE_HATCHING, STATE_RUNNING, STATE_STOPPED = ["ready", "hatching", "running", "stopped"]
 SLAVE_REPORT_INTERVAL = 3.0
+logger = logging.getLogger(__name__)
 
 
 class LocustRunner(object):

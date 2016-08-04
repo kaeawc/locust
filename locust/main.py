@@ -11,7 +11,6 @@ import socket
 from optparse import OptionParser
 
 from locust import web
-from locust.log import setup_logging, console_logger
 from locust.stats import stats_printer, print_percentile_stats, print_error_report, print_stats
 from locust.inspectlocust import print_task_ratio, get_task_ratio_dict
 from locust.core import Locust, HttpLocust
@@ -20,6 +19,8 @@ from locust import events
 
 _internals = [Locust, HttpLocust]
 version = locust.__version__
+logger = logging.getLogger(__name__)
+
 
 def parse_options():
     """
@@ -334,8 +335,6 @@ def main():
     parser, options, arguments = parse_options()
 
     # setup logging
-    setup_logging(options.loglevel, options.logfile)
-    logger = logging.getLogger(__name__)
     
     if options.show_version:
         print("Locust %s" % (version,))
@@ -349,9 +348,9 @@ def main():
     docstring, locusts = load_locustfile(locustfile)
 
     if options.list_commands:
-        console_logger.info("Available Locusts:")
+        logger.info("Available Locusts:")
         for name in locusts:
-            console_logger.info("    " + name)
+            logger.info("    " + name)
         sys.exit(0)
 
     if not locusts:
@@ -371,11 +370,11 @@ def main():
         locust_classes = locusts.values()
     
     if options.show_task_ratio:
-        console_logger.info("\n Task ratio per locust class")
-        console_logger.info( "-" * 80)
+        logger.info("\n Task ratio per locust class")
+        logger.info( "-" * 80)
         print_task_ratio(locust_classes)
-        console_logger.info("\n Total task ratio")
-        console_logger.info("-" * 80)
+        logger.info("\n Total task ratio")
+        logger.info("-" * 80)
         print_task_ratio(locust_classes, total=True)
         sys.exit(0)
     if options.show_task_ratio_json:
@@ -384,7 +383,7 @@ def main():
             "per_class": get_task_ratio_dict(locust_classes), 
             "total": get_task_ratio_dict(locust_classes, total=True)
         }
-        console_logger.info(dumps(task_data))
+        logger.info(dumps(task_data))
         sys.exit(0)
     
     # if --master is set, make sure --no-web isn't set

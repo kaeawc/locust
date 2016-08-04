@@ -1,14 +1,17 @@
 import re
 import time
-from datetime import timedelta
-from six.moves.urllib.parse import urlparse, urlunparse
+from urllib.parse import urlparse, urlunparse
 import six
 
 import requests
 from requests import Response, Request
 from requests.auth import HTTPBasicAuth
-from requests.exceptions import (RequestException, MissingSchema,
-    InvalidSchema, InvalidURL)
+from requests.exceptions import (
+    RequestException,
+    MissingSchema,
+    InvalidSchema,
+    InvalidURL
+)
 
 from locust import events
 from locust.exception import CatchResponseError, ResponseError

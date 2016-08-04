@@ -3,6 +3,7 @@
 import csv
 import json
 import os.path
+import logging
 from time import time
 from itertools import chain
 from collections import defaultdict
@@ -12,13 +13,12 @@ import six
 from gevent import wsgi
 from flask import Flask, make_response, request, render_template
 
-from . import runners
-from .cache import memoize
-from .runners import MasterLocustRunner
+from locust import runners
+from locust.cache import memoize
+from locust.runners import MasterLocustRunner
 from locust.stats import median_from_dict
 from locust import __version__ as version
 
-import logging
 logger = logging.getLogger(__name__)
 
 DEFAULT_CACHE_TIME = 2.0
@@ -36,13 +36,15 @@ def index():
     else:
         slave_count = 0
     
-    return render_template("index.html",
+    return render_template(
+        "index.html",
         state=runners.locust_runner.state,
         is_distributed=is_distributed,
         slave_count=slave_count,
         user_count=runners.locust_runner.user_count,
         version=version
     )
+
 
 @app.route('/swarm', methods=["POST"])
 def swarm():
@@ -55,6 +57,7 @@ def swarm():
     response.headers["Content-type"] = "application/json"
     return response
 
+
 @app.route('/stop')
 def stop():
     runners.locust_runner.stop()
@@ -62,11 +65,13 @@ def stop():
     response.headers["Content-type"] = "application/json"
     return response
 
+
 @app.route("/stats/reset")
 def reset_stats():
     runners.locust_runner.stats.reset_all()
     return "ok"
     
+
 @app.route("/stats/requests/csv")
 def request_stats_csv():
     rows = [
@@ -83,7 +88,7 @@ def request_stats_csv():
             '"Requests/s"',
         ])
     ]
-    
+
     for s in chain(_sort_stats(runners.locust_runner.request_stats), [runners.locust_runner.stats.aggregated_stats("Total", full_request_history=True)]):
         rows.append('"%s","%s",%i,%i,%i,%i,%i,%i,%i,%.2f' % (
             s.method,
@@ -104,6 +109,7 @@ def request_stats_csv():
     response.headers["Content-type"] = "text/csv"
     response.headers["Content-disposition"] = disposition
     return response
+
 
 @app.route("/stats/distribution/csv")
 def distribution_stats_csv():
@@ -132,6 +138,7 @@ def distribution_stats_csv():
     response.headers["Content-type"] = "text/csv"
     response.headers["Content-disposition"] = disposition
     return response
+
 
 @app.route('/stats/requests')
 @memoize(timeout=DEFAULT_CACHE_TIME, dynamic_timeout=True)
@@ -175,11 +182,13 @@ def request_stats():
     report["user_count"] = runners.locust_runner.user_count
     return json.dumps(report)
 
+
 @app.route("/exceptions")
 def exceptions():
     response = make_response(json.dumps({'exceptions': [{"count": row["count"], "msg": row["msg"], "traceback": row["traceback"], "nodes" : ", ".join(row["nodes"])} for row in six.itervalues(runners.locust_runner.exceptions)]}))
     response.headers["Content-type"] = "application/json"
     return response
+
 
 @app.route("/exceptions/csv")
 def exceptions_csv():
@@ -198,8 +207,10 @@ def exceptions_csv():
     response.headers["Content-disposition"] = disposition
     return response
 
+
 def start(locust, options):
     wsgi.WSGIServer((options.web_host, options.port), app, log=None).serve_forever()
+
 
 def _sort_stats(stats):
     return [stats[key] for key in sorted(six.iterkeys(stats))]

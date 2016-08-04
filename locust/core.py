@@ -1,7 +1,7 @@
 import gevent
 from gevent import monkey, GreenletExit
 import six
-from six.moves import xrange
+from past.builtins import xrange
 
 monkey.patch_all(thread=False)
 
@@ -11,10 +11,15 @@ import random
 import traceback
 import logging
 
-from locust.clients import HttpSession
 from locust import events
-
-from locust.exception import LocustError, InterruptTaskSet, RescheduleTask, RescheduleTaskImmediately, StopLocust
+from locust.clients import HttpSession
+from locust.exception import (
+    LocustError,
+    InterruptTaskSet,
+    RescheduleTask,
+    RescheduleTaskImmediately,
+    StopLocust
+)
 
 logger = logging.getLogger(__name__)
 

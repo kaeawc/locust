@@ -2,7 +2,7 @@ import inspect
 import six
 
 from locust.core import Locust, TaskSet
-from locust.log import console_logger
+logger = logging.getLogger(__name__)
 
 def print_task_ratio(locusts, total=False, level=0, parent_ratio=1.0):
     d = get_task_ratio_dict(locusts, total=total, parent_ratio=parent_ratio)
