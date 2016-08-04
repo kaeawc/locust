@@ -1,18 +1,21 @@
 import inspect
 import six
-
+import logging
 from locust.core import Locust, TaskSet
+
 logger = logging.getLogger(__name__)
+
 
 def print_task_ratio(locusts, total=False, level=0, parent_ratio=1.0):
     d = get_task_ratio_dict(locusts, total=total, parent_ratio=parent_ratio)
     _print_task_ratio(d)
 
+
 def _print_task_ratio(x, level=0):
     for k, v in six.iteritems(x):
         padding = 2*" "*level
         ratio = v.get('ratio', 1)
-        console_logger.info(" %-10s %-50s" % (padding + "%-6.1f" % (ratio*100), padding + k))
+        logger.info(" %-10s %-50s" % (padding + "%-6.1f" % (ratio*100), padding + k))
         if 'tasks' in v:
             _print_task_ratio(v['tasks'], level + 1)
 

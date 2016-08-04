@@ -12,7 +12,7 @@ from gevent import wsgi
 from locust import web, runners, stats
 from locust.runners import LocustRunner
 from locust.main import parse_options
-from locust.testcases import LocustTestCase
+from locust.test.testcases import LocustTestCase
 
 class TestWebUI(LocustTestCase):
     def setUp(self):
