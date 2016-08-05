@@ -28,7 +28,7 @@ app.debug = True
 app.root_path = os.path.dirname(os.path.abspath(__file__))
 
 
-@app.route('/')
+@app.route('/meruem')
 def index():
     is_distributed = isinstance(runners.locust_runner, MasterLocustRunner)
     if is_distributed:
@@ -46,7 +46,7 @@ def index():
     )
 
 
-@app.route('/swarm', methods=["POST"])
+@app.route('/meruem/swarm', methods=["POST"])
 def swarm():
     assert request.method == "POST"
 
@@ -58,7 +58,7 @@ def swarm():
     return response
 
 
-@app.route('/stop')
+@app.route('/meruem/stop')
 def stop():
     runners.locust_runner.stop()
     response = make_response(json.dumps({'success':True, 'message': 'Test stopped'}))
@@ -66,13 +66,13 @@ def stop():
     return response
 
 
-@app.route("/stats/reset")
+@app.route("/meruem/stats/reset")
 def reset_stats():
     runners.locust_runner.stats.reset_all()
     return "ok"
     
 
-@app.route("/stats/requests/csv")
+@app.route("/meruem/stats/requests/csv")
 def request_stats_csv():
     rows = [
         ",".join([
@@ -111,7 +111,7 @@ def request_stats_csv():
     return response
 
 
-@app.route("/stats/distribution/csv")
+@app.route("/meruem/stats/distribution/csv")
 def distribution_stats_csv():
     rows = [",".join((
         '"Name"',
@@ -140,7 +140,7 @@ def distribution_stats_csv():
     return response
 
 
-@app.route('/stats/requests')
+@app.route('/meruem/stats/requests')
 @memoize(timeout=DEFAULT_CACHE_TIME, dynamic_timeout=True)
 def request_stats():
     stats = []
@@ -183,14 +183,14 @@ def request_stats():
     return json.dumps(report)
 
 
-@app.route("/exceptions")
+@app.route("/meruem/exceptions")
 def exceptions():
     response = make_response(json.dumps({'exceptions': [{"count": row["count"], "msg": row["msg"], "traceback": row["traceback"], "nodes" : ", ".join(row["nodes"])} for row in six.itervalues(runners.locust_runner.exceptions)]}))
     response.headers["Content-type"] = "application/json"
     return response
 
 
-@app.route("/exceptions/csv")
+@app.route("/meruem/exceptions/csv")
 def exceptions_csv():
     data = StringIO()
     writer = csv.writer(data)
