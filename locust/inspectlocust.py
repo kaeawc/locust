@@ -38,17 +38,18 @@ def get_task_ratio_dict(tasks, total=False, parent_ratio=1.0):
 
     task_dict = {}
     for locust, ratio in six.iteritems(ratio_percent):
-        d = {"ratio":ratio}
+        d = {"ratio": ratio}
         if inspect.isclass(locust):
             if issubclass(locust, Locust):
                 T = locust.task_set.tasks
             elif issubclass(locust, TaskSet):
                 T = locust.tasks
+
             if total:
                 d["tasks"] = get_task_ratio_dict(T, total, ratio)
             else:
-                d["tasks"] = get_task_ratio_dict(T, total)
-        
+                d["tasks"] = get_task_ratio_dict(T)
+
         task_dict[locust.__name__] = d
 
     return task_dict
