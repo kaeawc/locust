@@ -109,7 +109,7 @@ $(".stats_label").click(function(event) {
 });
 
 function updateStats() {
-    $.get('/stats/requests', function (data) {
+    $.get('/meruem/stats/requests', function (data) {
         report = JSON.parse(data);
         $("#total_rps").html(Math.round(report.total_rps*100)/100);
         //$("#fail_ratio").html(Math.round(report.fail_ratio*10000)/100);
@@ -137,7 +137,7 @@ function updateStats() {
 updateStats();
 
 function updateExceptions() {
-    $.get('/exceptions', function (data) {
+    $.get('/meruem/exceptions', function (data) {
         $('#exceptions tbody').empty();
         $('#exceptions tbody').jqoteapp(exceptions_tpl, data.exceptions);
         setTimeout(updateExceptions, 5000);
