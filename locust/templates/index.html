@@ -2,13 +2,13 @@
 <html>
 <head> 
     <title>Locust</title> 
-    <link rel="stylesheet" type="text/css" href="/static/style.css" media="screen">
-    <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon"/>
+    <link rel="stylesheet" type="text/css" href="/meruem/static/style.css" media="screen">
+    <link rel="shortcut icon" href="/meruem/static/img/favicon.ico" type="image/x-icon"/>
 </head> 
 <body class="{{state}}">
     <div class="top">
         <div class="top_content">
-            <img src="/static/img/logo.png" class="logo" onclick="$('.about').fadeIn();" />
+            <img src="/meruem/static/img/logo.png" class="logo" onclick="$('.about').fadeIn();" />
             <div class="boxes">
                 <div class="top_box box_status">
                     <div class="label">STATUS</div>
@@ -36,10 +36,10 @@
                     <div class="value"><span id="fail_ratio"></span>%</div>
                 </div>
                 <div class="top_box box_stop box_running" id="box_stop">
-                    <a href="/stop"><img src="/static/img/stop.png" style="border:0;"></a>
+                    <a href="/meruem/stop"><img src="/meruem/static/img/stop.png" style="border:0;"></a>
                 </div>
                 <div class="top_box box_stop box_running" id="box_reset">
-                    <a href="/stats/reset">Reset Stats</a>
+                    <a href="/meruem/stats/reset">Reset Stats</a>
                 </div>
             </div>
             <div style="clear:both;"></div>
@@ -53,12 +53,12 @@
             </div>
             <div class="padder">
                 <h2>Start new Locust swarm</h2>
-                <form action="/swarm" method="POST" id="swarm_form">
+                <form action="/meruem/swarm" method="POST" id="swarm_form">
                     <label for="locust_count">Number of users to simulate</label>
                     <input type="text" name="locust_count" id="locust_count" class="val" /><br>
                     <label for="hatch_rate">Hatch rate <span style="color:#8a8a8a;">(users spawned/second)</span></label>
                     <input type="text" name="hatch_rate" id="hatch_rate" class="val" /><br>
-                    <input type="image" src="/static/img/start_button.png" value="Start swarming" class="start_button">
+                    <input type="image" src="/meruem/static/img/start_button.png" value="Start swarming" class="start_button">
                 </form>
                 <div style="clear:right;"></div>
             </div>
@@ -70,12 +70,12 @@
             </div>
             <div class="padder">
                 <h2>Change the locust count</h2>
-                <form action="/swarm" method="POST" id="edit_form">
+                <form action="/meruem/swarm" method="POST" id="edit_form">
                     <label for="locust_count">Number of users to simulate</label>
                     <input type="text" name="locust_count" id="new_locust_count" class="val" /><br>
                     <label for="hatch_rate">Hatch rate <span style="color:#8a8a8a;">(users spawned/second)</span></label>
                     <input type="text" name="hatch_rate" id="new_hatch_rate" class="val" /><br>
-                    <input type="image" src="/static/img/start_button.png" value="Start swarming" class="start_button">
+                    <input type="image" src="/meruem/static/img/start_button.png" value="Start swarming" class="start_button">
                 </form>
                 <div style="clear:right;"></div>
             </div>
@@ -134,9 +134,9 @@
                 </div>
                 <div style="display:none;">
                     <div style="margin-top:20px;">
-                        <a href="/stats/requests/csv">Download request statistics CSV</a><br>
-                        <a href="/stats/distribution/csv">Download response time distribution CSV</a><br>
-                        <a href="/exceptions/csv">Download exceptions CSV</a>
+                        <a href="/meruem/stats/requests/csv">Download request statistics CSV</a><br>
+                        <a href="/meruem/stats/distribution/csv">Download response time distribution CSV</a><br>
+                        <a href="/meruem/exceptions/csv">Download exceptions CSV</a>
                     </div>
                 </div>
             </div>
@@ -176,9 +176,9 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="/static/jquery-1.4.min.js"></script>
-    <script type="text/javascript" src="/static/jquery.jqote2.min.js"></script>
-    <script type="text/javascript" src="/static/jquery.tools.min.js"></script>
+    <script type="text/javascript" src="/meruem/static/jquery-1.4.min.js"></script>
+    <script type="text/javascript" src="/meruem/static/jquery.jqote2.min.js"></script>
+    <script type="text/javascript" src="/meruem/static/jquery.tools.min.js"></script>
     <script type="text/x-jqote-template" id="stats-template">
         <![CDATA[
         <tr class="<%=(alternate ? "dark" : "")%> <%=(this.name == "Total" ? "total" : "")%>">
@@ -217,6 +217,6 @@
         <% alternate = !alternate; %>
         ]]>
     </script>
-    <script type="text/javascript" src="/static/locust.js"></script>
+    <script type="text/javascript" src="/meruem/static/locust.js"></script>
 </body>
 </html>
