@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_CACHE_TIME = 2.0
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/meruem/static')
 app.debug = True
 app.root_path = os.path.dirname(os.path.abspath(__file__))
 
