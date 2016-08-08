@@ -285,6 +285,7 @@ class TestTaskSet(LocustTestCase):
         try:
             l.run()
         except LocustError as e:
+            print(e.args[0])
             self.assertTrue("MyLocust" in e.args[0], "MyLocust should have been referred to in the exception message")
             self.assertTrue("MyTaskSet" in e.args[0], "MyTaskSet should have been referred to in the exception message")
         except:

@@ -110,13 +110,12 @@ class Locust(object):
             pass
         except (RescheduleTask, RescheduleTaskImmediately) as e:
             err = LocustError(
-                "A task inside a Locust class' main TaskSet (`%s.task_set` of type `%s`) seems to have \
+                "A task inside a Locust class' main TaskSet (`{}.task_set` of type `{}`) seems to have \
                 called interrupt() or raised an InterruptTaskSet exception. The interrupt() function is \
                 used to hand over execution to a parent TaskSet, and should never be called in the main \
-                TaskSet which a Locust class' task_set attribute points to.",
-                type(self).__name__,
-                self.task_set.__name__
-            )
+                TaskSet which a Locust class' task_set attribute points to.".format(
+                    type(self).__name__,
+                    self.task_set.__name__))
             six.reraise(LocustError, err, sys.exc_info()[2])
 
 
