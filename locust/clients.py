@@ -74,7 +74,7 @@ class HttpSession(requests.Session):
         else:
             return "%s%s" % (self.base_url, path)
 
-    def request(self, method, url, name=None, catch_response=False, **kwargs):
+    def request(self, method, url, name=None, catch_response=False, **kwargs) -> Response:
         """
         Constructs and sends a :py:class:`requests.Request`.
         Returns :py:class:`requests.Response` object.
@@ -138,7 +138,7 @@ class HttpSession(requests.Session):
                 )
             return response
 
-    def _send_request_safe_mode(self, method, url, **kwargs):
+    def _send_request_safe_mode(self, method, url, **kwargs) -> Response:
         """
         Send an HTTP request, and catch any exception that might occur due to connection problems.
 
@@ -168,7 +168,7 @@ class ResponseContextManager(LocustResponse):
 
     _is_reported = False
 
-    def __init__(self, response):
+    def __init__(self, response: Response):
         # copy data from response to this object
         self.__dict__ = response.__dict__
 

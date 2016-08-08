@@ -39,9 +39,9 @@ def task(weight=1):
                 pass
     """
     
-    def decorator_func(func):
-        func.locust_task_weight = weight
-        return func
+    def decorator_func(f):
+        f.locust_task_weight = weight
+        return f
     
     """
     Check if task was used without parentheses (not called), like this::
@@ -109,7 +109,15 @@ class Locust(object):
         except StopLocust:
             pass
         except (RescheduleTask, RescheduleTaskImmediately) as e:
-            six.reraise(LocustError, LocustError("A task inside a Locust class' main TaskSet (`%s.task_set` of type `%s`) seems to have called interrupt() or raised an InterruptTaskSet exception. The interrupt() function is used to hand over execution to a parent TaskSet, and should never be called in the main TaskSet which a Locust class' task_set attribute points to." % (type(self).__name__, self.task_set.__name__)), sys.exc_info()[2])
+            err = LocustError(
+                "A task inside a Locust class' main TaskSet (`%s.task_set` of type `%s`) seems to have \
+                called interrupt() or raised an InterruptTaskSet exception. The interrupt() function is \
+                used to hand over execution to a parent TaskSet, and should never be called in the main \
+                TaskSet which a Locust class' task_set attribute points to.",
+                type(self).__name__,
+                self.task_set.__name__
+            )
+            six.reraise(LocustError, err, sys.exc_info()[2])
 
 
 class HttpLocust(Locust):
@@ -132,7 +140,8 @@ class HttpLocust(Locust):
     def __init__(self):
         super(HttpLocust, self).__init__()
         if self.host is None:
-            raise LocustError("You must specify the base host. Either in the host attribute in the Locust class, or on the command line using the --host option.")
+            raise LocustError("You must specify the base host. Either in the host attribute in the \
+            Locust class, or on the command line using the --host option.")
         
         self.client = HttpSession(base_url=self.host)
 
@@ -154,17 +163,17 @@ class TaskSetMeta(type):
             if isinstance(tasks, dict):
                 tasks = six.iteritems(tasks)
             
-            for task in tasks:
-                if isinstance(task, tuple):
-                    task, count = task
-                    for i in xrange(0, count):
-                        new_tasks.append(task)
+            for new_task in tasks:
+                if isinstance(new_task, tuple):
+                    new_task, count = new_task
+                    for _ in xrange(0, count):
+                        new_tasks.append(new_task)
                 else:
-                    new_tasks.append(task)
+                    new_tasks.append(new_task)
         
         for item in six.itervalues(classDict):
             if hasattr(item, "locust_task_weight"):
-                for i in xrange(0, item.locust_task_weight):
+                for _ in xrange(0, item.locust_task_weight):
                     new_tasks.append(item)
         
         classDict["tasks"] = new_tasks
@@ -300,17 +309,17 @@ class TaskSet(object):
         task = self._task_queue.pop(0)
         self.execute_task(task["callable"], *task["args"], **task["kwargs"])
     
-    def execute_task(self, task, *args, **kwargs):
+    def execute_task(self, new_task, *args, **kwargs):
         # check if the function is a method bound to the current locust, and if so, don't pass self as first argument
-        if hasattr(task, "__self__") and task.__self__ == self:
+        if hasattr(new_task, "__self__") and new_task.__self__ == self:
             # task is a bound method on self
-            task(*args, **kwargs)
-        elif hasattr(task, "tasks") and issubclass(task, TaskSet):
+            new_task(*args, **kwargs)
+        elif hasattr(new_task, "tasks") and issubclass(new_task, TaskSet):
             # task is another (nested) TaskSet class
-            task(self).run(*args, **kwargs)
+            new_task(self).run(*args, **kwargs)
         else:
             # task is a function
-            task(self, *args, **kwargs)
+            new_task(self, *args, **kwargs)
     
     def schedule_task(self, task_callable, args=None, kwargs=None, first=False):
         """
@@ -323,11 +332,11 @@ class TaskSet(object):
         * kwargs: Dict of keyword arguments that will be passed to the task callable.
         * first: Optional keyword argument. If True, the task will be put first in the queue.
         """
-        task = {"callable":task_callable, "args":args or [], "kwargs":kwargs or {}}
+        next_task = {"callable": task_callable, "args":args or [], "kwargs": kwargs or {}}
         if first:
-            self._task_queue.insert(0, task)
+            self._task_queue.insert(0, next_task)
         else:
-            self._task_queue.append(task)
+            self._task_queue.append(next_task)
     
     def get_next_task(self):
         return random.choice(self.tasks)
@@ -337,10 +346,12 @@ class TaskSet(object):
         seconds = millis / 1000.0
         self._sleep(seconds)
 
-    def _sleep(self, seconds):
+    @classmethod
+    def _sleep(cls, seconds):
         gevent.sleep(seconds)
-    
-    def interrupt(self, reschedule=True):
+
+    @classmethod
+    def interrupt(cls, reschedule=True):
         """
         Interrupt the TaskSet and hand over execution control back to the parent TaskSet.
         

@@ -13,7 +13,7 @@ def memoize(timeout, dynamic_timeout=False):
     def decorator(func):
         def wrapper(*args, **kwargs):
             start = time()
-            if (not "time" in cache) or (start - cache["time"] > cache["timeout"]):
+            if "time" not in cache or (start - cache["time"] > cache["timeout"]):
                 # cache miss
                 cache["result"] = func(*args, **kwargs)
                 cache["time"] = time()

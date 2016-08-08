@@ -6,7 +6,7 @@ from locust.core import Locust, TaskSet
 logger = logging.getLogger(__name__)
 
 
-def print_task_ratio(locusts, total=False, level=0, parent_ratio=1.0):
+def print_task_ratio(locusts, total=False, parent_ratio=1.0):
     d = get_task_ratio_dict(locusts, total=total, parent_ratio=parent_ratio)
     _print_task_ratio(d)
 
@@ -41,14 +41,14 @@ def get_task_ratio_dict(tasks, total=False, parent_ratio=1.0):
         d = {"ratio": ratio}
         if inspect.isclass(locust):
             if issubclass(locust, Locust):
-                T = locust.task_set.tasks
+                locust_tasks = locust.task_set.tasks
             elif issubclass(locust, TaskSet):
-                T = locust.tasks
+                locust_tasks = locust.tasks
 
             if total:
-                d["tasks"] = get_task_ratio_dict(T, total, ratio)
+                d["tasks"] = get_task_ratio_dict(locust_tasks, total, ratio)
             else:
-                d["tasks"] = get_task_ratio_dict(T)
+                d["tasks"] = get_task_ratio_dict(locust_tasks)
 
         task_dict[locust.__name__] = d
 

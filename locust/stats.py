@@ -253,7 +253,8 @@ class StatsEntry(object):
         self.num_failures = self.num_failures + other.num_failures
         self.total_response_time = self.total_response_time + other.total_response_time
         self.max_response_time = max(self.max_response_time, other.max_response_time)
-        self.min_response_time = min(self.min_response_time or 0, other.min_response_time or 0) or other.min_response_time
+        shortest_response_time = min(self.min_response_time or 0, other.min_response_time or 0)
+        self.min_response_time = shortest_response_time or other.min_response_time
         self.total_content_length = self.total_content_length + other.total_content_length
 
         if full_request_history:
@@ -338,7 +339,8 @@ class StatsEntry(object):
         processed_count = 0
         for response_time in sorted(six.iterkeys(self.response_times), reverse=True):
             processed_count += self.response_times[response_time]
-            if((self.num_requests - processed_count) <= num_of_request):
+
+            if (self.num_requests - processed_count) <= num_of_request:
                 return response_time
 
     def percentile(self, tpl=" %-" + str(STATS_NAME_WIDTH) + "s %8d %6d %6d %6d %6d %6d %6d %6d %6d %6d"):
@@ -358,6 +360,7 @@ class StatsEntry(object):
             self.get_response_time_percentile(0.99),
             self.max_response_time
         )
+
 
 class StatsError(object):
     def __init__(self, method, name, error, occurences=0):
@@ -399,6 +402,7 @@ class StatsError(object):
 def avg(values):
     return sum(values, 0.0) / max(len(values), 1)
 
+
 def median_from_dict(total, count):
     """
     total is the number of requests made
@@ -416,20 +420,28 @@ global_stats = RequestStats()
 A global instance for holding the statistics. Should be removed eventually.
 """
 
+
 def on_request_success(request_type, name, response_time, response_length):
-    if global_stats.max_requests is not None and (global_stats.num_requests + global_stats.num_failures) >= global_stats.max_requests:
+    if global_stats.max_requests is not None and \
+            (global_stats.num_requests + global_stats.num_failures) >= global_stats.max_requests:
         raise StopLocust("Maximum number of requests reached")
     global_stats.get(name, request_type).log(response_time, response_length)
 
+
 def on_request_failure(request_type, name, response_time, exception):
-    if global_stats.max_requests is not None and (global_stats.num_requests + global_stats.num_failures) >= global_stats.max_requests:
+    if global_stats.max_requests is not None and \
+            (global_stats.num_requests + global_stats.num_failures) >= global_stats.max_requests:
         raise StopLocust("Maximum number of requests reached")
     global_stats.get(name, request_type).log_error(exception)
 
+
 def on_report_to_master(client_id, data):
-    data["stats"] = [global_stats.entries[key].get_stripped_report() for key in six.iterkeys(global_stats.entries) if not (global_stats.entries[key].num_requests == 0 and global_stats.entries[key].num_failures == 0)]
+    data["stats"] = [global_stats.entries[key].get_stripped_report() for key in six.iterkeys(global_stats.entries)
+                     if not (global_stats.entries[key].num_requests == 0 and
+                             global_stats.entries[key].num_failures == 0)]
     data["errors"] =  dict([(k, e.to_dict()) for k, e in six.iteritems(global_stats.errors)])
     global_stats.errors = {}
+
 
 def on_slave_report(client_id, data):
     for stats_data in data["stats"]:
@@ -474,6 +486,7 @@ def print_stats(stats):
     logger.info((" %-" + str(STATS_NAME_WIDTH) + "s %7d %12s %42.2f") % ('Total', total_reqs, "%d(%.2f%%)" % (total_failures, fail_percent), total_rps))
     logger.info("")
 
+
 def print_percentile_stats(stats):
     logger.info("Percentage of the requests completed within given times")
     logger.info((" %-" + str(STATS_NAME_WIDTH) + "s %8s %6s %6s %6s %6s %6s %6s %6s %6s %6s") % ('Name', '# reqs', '50%', '66%', '75%', '80%', '90%', '95%', '98%', '99%', '100%'))
@@ -489,6 +502,7 @@ def print_percentile_stats(stats):
         logger.info(total_stats.percentile())
     logger.info("")
 
+
 def print_error_report():
     if not len(global_stats.errors):
         return
@@ -499,6 +513,7 @@ def print_error_report():
         logger.info(" %-18i %-100s" % (error.occurences, error.to_name()))
     logger.info("-" * (80 + STATS_NAME_WIDTH))
     logger.info("")
+
 
 def stats_printer():
     from locust.runners import locust_runner
