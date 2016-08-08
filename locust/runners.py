@@ -199,7 +199,7 @@ class LocalLocustRunner(LocustRunner):
         self.greenlet = None
 
         # register listener thats logs the exception for the local runner
-        def on_locust_error(_, exception, tb):
+        def on_locust_error(locust_instance, exception, tb):
             formatted_tb = "".join(traceback.format_tb(tb))
             self.log_exception("local", str(exception), formatted_tb)
         events.locust_error += on_locust_error
@@ -329,7 +329,7 @@ class MasterLocustRunner(DistributedLocustRunner):
             if msg.type == "client_ready":
                 node_id = msg.node_id
                 self.clients[node_id] = SlaveNode(node_id)
-                logger.info("Client %r reported as ready. Currently %i clients ready to swarm." %
+                logger.info("Client %r reported as ready. Currently %i clients ready to swarm.",
                             node_id,
                             len(self.clients.ready))
             elif msg.type == "client_stopped":
@@ -391,7 +391,7 @@ class SlaveLocustRunner(DistributedLocustRunner):
         events.quitting += on_quitting
 
         # register listener thats sends locust exceptions to master
-        def on_locust_error(_, exception, tb):
+        def on_locust_error(locust_instance, exception, tb):
             formatted_tb = "".join(traceback.format_tb(tb))
             self.client.send(Message("exception", {"msg": str(exception), "traceback": formatted_tb}, self.client_id))
         events.locust_error += on_locust_error

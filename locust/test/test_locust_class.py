@@ -424,7 +424,7 @@ class TestWebLocustClass(WebserverTestCase):
         class MyTaskSet(TaskSet):
             @task
             def t1(self):
-                self.client.get("/")
+                self.client.get("/meruem")
                 self.interrupt()
         
         class MyLocust(Locust):
@@ -432,9 +432,9 @@ class TestWebLocustClass(WebserverTestCase):
             task_set = MyTaskSet
         
         my_locust = MyLocust()
-        self.assertRaises(LocustError, lambda: my_locust.client.get("/"))
+        self.assertRaises(LocustError, lambda: my_locust.client.get("/meruem"))
         my_taskset = MyTaskSet(my_locust)
-        self.assertRaises(LocustError, lambda: my_taskset.client.get("/"))
+        self.assertRaises(LocustError, lambda: my_taskset.client.get("/meruem"))
     
     def test_redirect_url_original_path_as_name(self):
         class MyLocust(HttpLocust):
@@ -532,7 +532,7 @@ class TestCatchResponse(WebserverTestCase):
         class MyLocust(HttpLocust):
             host = "http://127.0.0.1:1"
         l = MyLocust()
-        with l.client.get("/", catch_response=True) as r:
+        with l.client.get("/meruem", catch_response=True) as r:
             self.assertEqual(r.status_code, 0)
             self.assertEqual(None, r.content)
             r.success()
@@ -543,7 +543,7 @@ class TestCatchResponse(WebserverTestCase):
         class MyLocust(HttpLocust):
             host = "http://127.0.0.1:1"
         l = MyLocust()
-        with l.client.get("/", catch_response=True) as r:
+        with l.client.get("/meruem", catch_response=True) as r:
             self.assertEqual(r.status_code, 0)
             self.assertEqual(None, r.content)
             r.success()

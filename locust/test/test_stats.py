@@ -1,14 +1,14 @@
 import unittest
 import time
 
-from requests.exceptions import RequestException
 from past.builtins import xrange
 
 from locust.test.testcases import WebserverTestCase
 from locust.stats import RequestStats, StatsEntry, global_stats
-from locust.core import HttpLocust, Locust, TaskSet, task
+from locust.core import HttpLocust, TaskSet, task
 from locust.inspectlocust import get_task_ratio_dict
 from locust.rpc.protocol import Message
+
 
 class TestRequestStats(unittest.TestCase):
     def setUp(self):
@@ -173,16 +173,18 @@ class TestRequestStatsWithWebserver(WebserverTestCase):
             host = "http://localhost:1"
         
         locust = MyLocust()
-        response = locust.client.get("/", timeout=0.1)
+        response = locust.client.get("/meruem", timeout=0.1)
         self.assertEqual(response.status_code, 0)
-        self.assertEqual(1, global_stats.get("/", "GET").num_failures)
-        self.assertEqual(0, global_stats.get("/", "GET").num_requests)
+        self.assertEqual(1, global_stats.get("/meruem", "GET").num_failures)
+        self.assertEqual(0, global_stats.get("/meruem", "GET").num_requests)
     
     def test_max_requests(self):
+
         class MyTaskSet(TaskSet):
             @task
             def my_task(self):
                 self.client.get("/ultra_fast")
+
         class MyLocust(HttpLocust):
             host = "http://127.0.0.1:%i" % self.port
             task_set = MyTaskSet
@@ -209,6 +211,7 @@ class TestRequestStatsWithWebserver(WebserverTestCase):
             global_stats.max_requests = None
     
     def test_max_requests_failed_requests(self):
+
         class MyTaskSet(TaskSet):
             @task
             def my_task(self):
@@ -257,6 +260,7 @@ class MyTaskSet(TaskSet):
         @task
         def task2(self):
             pass
+
     
 class TestInspectLocust(unittest.TestCase):
     def test_get_task_ratio_dict_relative(self):
