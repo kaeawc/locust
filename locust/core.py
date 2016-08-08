@@ -171,6 +171,7 @@ class TaskSetMeta(type):
         
         return type.__new__(mcs, classname, bases, classDict)
 
+
 @six.add_metaclass(TaskSetMeta)
 class TaskSet(object):
     """
@@ -231,6 +232,8 @@ class TaskSet(object):
     def __init__(self, parent):
         self._task_queue = []
         self._time_start = time()
+        self.args = None
+        self.kwargs = None
         
         if isinstance(parent, TaskSet):
             self.locust = parent.locust

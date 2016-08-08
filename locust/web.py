@@ -7,7 +7,8 @@ import logging
 from time import time
 from itertools import chain
 from collections import defaultdict
-from six.moves import StringIO, xrange
+from io import StringIO
+from past.builtins import xrange
 import six
 
 from gevent import wsgi
@@ -53,7 +54,7 @@ def swarm():
     locust_count = int(request.form["locust_count"])
     hatch_rate = float(request.form["hatch_rate"])
     runners.locust_runner.start_hatching(locust_count, hatch_rate)
-    response = make_response(json.dumps({'success':True, 'message': 'Swarming started'}))
+    response = make_response(json.dumps({'success': True, 'message': 'Swarming started'}))
     response.headers["Content-type"] = "application/json"
     return response
 

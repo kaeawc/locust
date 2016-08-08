@@ -240,8 +240,8 @@ def _is_package(path):
     Is the given path a Python package?
     """
     return (
-        os.path.isdir(path)
-        and os.path.exists(os.path.join(path, '__init__.py'))
+        os.path.isdir(path) and
+        os.path.exists(os.path.join(path, '__init__.py'))
     )
 
 
@@ -283,11 +283,11 @@ def is_locust(tup):
     """
     name, item = tup
     return bool(
-        inspect.isclass(item)
-        and issubclass(item, Locust)
-        and hasattr(item, "task_set")
-        and getattr(item, "task_set")
-        and not name.startswith('_')
+        inspect.isclass(item) and
+        issubclass(item, Locust) and
+        hasattr(item, "task_set") and
+        getattr(item, "task_set") and
+        not name.startswith('_')
     )
 
 
@@ -330,6 +330,7 @@ def load_locustfile(path):
     # Return our two-tuple
     locusts = dict(filter(is_locust, vars(imported).items()))
     return imported.__doc__, locusts
+
 
 def main():
     parser, options, arguments = parse_options()
