@@ -518,6 +518,7 @@ class TestCatchResponse(WebserverTestCase):
             def interrupted_task(self):
                 with self.client.get("/ultra_fast", catch_response=True) as r:
                     raise InterruptTaskSet()
+
         class MyLocust(HttpLocust):
             host = "http://127.0.0.1:%i" % self.port
             task_set = MyTaskSet
